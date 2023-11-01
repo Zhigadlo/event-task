@@ -1,4 +1,4 @@
-﻿namespace event_web_api.DAL.Models
+﻿namespace Entities
 {
     public class Event
     {
