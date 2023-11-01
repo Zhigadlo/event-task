@@ -13,7 +13,7 @@ namespace event_web_api.BLL.Service
         private IRepositoryManager _repositoryManager;
         private IMapper _mapper;
         private SpeakerValidator _validator;
-        public SpeakerService(IRepositoryManager repositoryManager, IMapper mapper) 
+        public SpeakerService(IRepositoryManager repositoryManager, IMapper mapper)
         {
             _repositoryManager = repositoryManager;
             _mapper = mapper;
@@ -23,7 +23,7 @@ namespace event_web_api.BLL.Service
         {
             var speaker = _mapper.Map<Speaker>(speakerForCreationDto);
 
-            var result = _validator.Validate(speaker);
+            var result = await _validator.ValidateAsync(speaker, cancellationToken);
             if (!result.IsValid)
             {
                 var message = string.Join(Environment.NewLine, result.Errors.Select(x => x.ErrorMessage));
@@ -38,7 +38,7 @@ namespace event_web_api.BLL.Service
         public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
         {
             var speakerForDelete = _repositoryManager.Speaker.GetSpeaker(id, true);
-            if (speakerForDelete == null) 
+            if (speakerForDelete == null)
             {
                 throw new NotFoundException("Speaker with such id is not found");
             }
@@ -59,8 +59,15 @@ namespace event_web_api.BLL.Service
 
         public async Task UpdateAsync(SpeakerDto speakerForUpdateDto, CancellationToken cancellationToken = default)
         {
-            var speaker = _mapper.Map<Speaker>(speakerForUpdateDto);
-            var result = _validator.Validate(speaker);
+            var speaker = _repositoryManager.Speaker.GetSpeaker(speakerForUpdateDto.Id, true);
+            if (speaker == null)
+            {
+                throw new NotFoundException("Speaker with such id is not found");
+            }
+
+            _mapper.Map(speakerForUpdateDto, speaker);
+
+            var result = await _validator.ValidateAsync(speaker);
             if (!result.IsValid)
             {
                 var message = string.Join(Environment.NewLine, result.Errors.Select(x => x.ErrorMessage));

@@ -6,7 +6,7 @@ namespace event_web_api.BLL.Mapper
 {
     public class EventProfile : Profile
     {
-        public EventProfile() 
+        public EventProfile()
         {
             CreateMap<EventDto, Event>().ReverseMap();
             CreateMap<EventForCreationDto, Event>();

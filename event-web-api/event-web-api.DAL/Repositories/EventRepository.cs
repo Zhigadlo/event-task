@@ -15,9 +15,9 @@ namespace event_web_api.DAL.Repositories
 
         public void DeleteEvent(Event @event) => Delete(@event);
 
-        public IQueryable<Event> GetAllEventAsync(bool trackChanges) => FindAll(trackChanges).Include(e => e.Speaker).OrderBy(e => e.Date);
+        public IQueryable<Event> GetAllEvent(bool trackChanges) => FindAll(trackChanges).Include(e => e.Speaker).OrderBy(e => e.Date);
 
-        public Event? GetEventAsync(int id, bool trackChanges) => FindByCondition(e => e.Id.Equals(id), trackChanges).SingleOrDefault();
+        public Event? GetEvent(Guid id, bool trackChanges) => FindByCondition(e => e.Id.Equals(id), trackChanges).SingleOrDefault();
 
         public void UpdateEvent(Event @event) => Update(@event);
     }
