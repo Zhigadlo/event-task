@@ -16,7 +16,7 @@ namespace event_web_api.DAL.Repositories
 
         public IQueryable<Speaker> GetAllSpeaker(bool trackChanges) => FindAll(trackChanges).OrderBy(c => c.FirstName);
 
-        public Speaker? GetSpeaker(int id, bool trackChanges) => FindByCondition(s => s.Id.Equals(id), trackChanges).SingleOrDefault();
+        public Speaker? GetSpeaker(Guid id, bool trackChanges) => FindByCondition(s => s.Id.Equals(id), trackChanges).SingleOrDefault();
 
         public void UpdateSpeaker(Speaker speaker) => Update(speaker);
     }
