@@ -1,4 +1,5 @@
 ﻿using event_web_api.DAL.EF.EntityTypeConfigurations;
+using event_web_api.DAL.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace event_web_api.DAL.EF
