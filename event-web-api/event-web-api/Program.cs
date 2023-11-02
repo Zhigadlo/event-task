@@ -1,6 +1,5 @@
 using AutoMapper;
-using Contracts.Repositories;
-using Contracts.Services;
+using Contracts.Managers;
 using event_web_api.BLL.Managers;
 using event_web_api.BLL.Mapper;
 using event_web_api.DAL.EF;
@@ -13,12 +12,19 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<EventContext>(options =>
                              options.UseSqlServer(builder.Configuration.GetConnectionString("EventsDatabase")));
+builder.Services.AddDbContext<UserContext>(options =>
+                             options.UseSqlServer(builder.Configuration.GetConnectionString("UsersDatabase")));
+
+builder.Services.AddAuthentication();
+builder.Services.ConfigureIdentity();
+builder.Services.ConfigureJWT(builder.Configuration);
 
 var config = new MapperConfiguration(cfg => cfg.AddProfiles(new List<Profile>
     {
         new SpeakerProfile(),
         new EventProfile()
     }));
+
 builder.Services.AddScoped<IMapper>(x => new Mapper(config));
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
 builder.Services.AddScoped<IServiceManager, ServiceManager>();
@@ -42,6 +48,7 @@ app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
