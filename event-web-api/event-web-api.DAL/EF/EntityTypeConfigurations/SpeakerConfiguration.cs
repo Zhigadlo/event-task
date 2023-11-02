@@ -12,6 +12,10 @@ namespace event_web_api.DAL.EF.EntityTypeConfigurations
             builder.Property(s => s.Id).ValueGeneratedOnAdd();
             builder.Property(s => s.FirstName).IsRequired();
             builder.Property(s => s.LastName).IsRequired();
+
+            builder.HasMany(s => s.Events)
+                   .WithOne(e => e.Speaker)
+                   .HasForeignKey(e => e.SpeakerId);
         }
     }
 }

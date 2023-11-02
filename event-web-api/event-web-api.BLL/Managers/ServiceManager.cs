@@ -33,8 +33,8 @@ namespace event_web_api.BLL.Managers
         {
             get
             {
-                if(_event == null)
-                   _event = new EventService(_repositoryManager, _mapper);
+                if (_event == null)
+                    _event = new EventService(_repositoryManager, _mapper);
 
                 return _event;
             }
