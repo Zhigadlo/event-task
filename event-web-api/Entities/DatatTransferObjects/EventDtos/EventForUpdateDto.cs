@@ -1,7 +1,8 @@
-﻿namespace Entities.DatatTransferObjects
+﻿namespace Entities.DatatTransferObjects.EventDtos
 {
-    public class EventForCreationDto
+    public class EventForUpdateDto
     {
+        public Guid Id { get; set; }
         public string Theme { get; set; }
         public string Description { get; set; }
         public DateTime Date { get; set; }

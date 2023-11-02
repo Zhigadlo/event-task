@@ -1,13 +1,12 @@
-﻿namespace Entities.DatatTransferObjects
+﻿namespace Entities.DatatTransferObjects.EventDtos
 {
-    public class EventDto
+    public class EventForCreationDto
     {
-        public Guid Id { get; set; }
         public string Theme { get; set; }
         public string Description { get; set; }
         public DateTime Date { get; set; }
         public string Place { get; set; }
 
-        public SpeakerDto Speaker { get; set; }
+        public Guid SpeakerId { get; set; }
     }
 }
