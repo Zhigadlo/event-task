@@ -35,10 +35,5 @@ namespace event_web_api.DAL.Managers
                 return _event;
             }
         }
-
-        public async Task SaveChangesAsync(CancellationToken cancellationToken)
-        {
-            await _context.SaveChangesAsync(cancellationToken);
-        }
     }
 }

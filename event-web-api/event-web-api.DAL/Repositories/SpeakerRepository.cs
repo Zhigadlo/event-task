@@ -1,23 +1,55 @@
 ﻿using Contracts.Repositories;
 using Entities;
+using Entities.Exceptions;
 using event_web_api.DAL.EF;
+using Microsoft.EntityFrameworkCore;
 
 namespace event_web_api.DAL.Repositories
 {
-    public class SpeakerRepository : RepositoryBase<Speaker>, ISpeakerRepository
+    public class SpeakerRepository : ISpeakerRepository
     {
-        public SpeakerRepository(EventContext context) : base(context)
+        private EventContext _context;
+        public SpeakerRepository(EventContext context)
         {
+            _context = context;
         }
 
-        public void CreateSpeaker(Speaker speaker) => Create(speaker);
+        public async Task CreateSpeakerAsync(Speaker speaker, CancellationToken cancellationToken = default)
+        {
+            await _context.AddAsync(speaker, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
+        }
 
-        public void DeleteSpeaker(Speaker speaker) => Delete(speaker);
+        public async Task DeleteSpeakerAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            var speakerForDelete = _context.Events.SingleOrDefaultAsync(e => e.Id.Equals(id), cancellationToken);
+            if (speakerForDelete == null)
+            {
+                throw new NotFoundException("Speaker with such id not found");
+            }
+            _context.Remove(speakerForDelete);
+            await _context.SaveChangesAsync(cancellationToken);
+        }
 
-        public IQueryable<Speaker> GetAllSpeaker(bool trackChanges) => FindAll(trackChanges).OrderBy(c => c.FirstName);
+        public async Task<IEnumerable<Speaker>> GetAllSpeakersAsync(bool trackChanges, CancellationToken cancellationToken = default)
+        {
+            return await (trackChanges ? _context.Speakers.AsNoTracking() : _context.Speakers).OrderBy(s => s.FirstName).ToListAsync(cancellationToken);
+        }
 
-        public Speaker? GetSpeaker(Guid id, bool trackChanges) => FindByCondition(s => s.Id.Equals(id), trackChanges).SingleOrDefault();
+        public async Task<Speaker?> GetSpeakerAsync(Guid id, bool trackChanges, CancellationToken cancellationToken = default)
+        {
+            return await (trackChanges ? _context.Speakers.AsNoTracking() : _context.Speakers).SingleOrDefaultAsync(s => s.Id.Equals(id), cancellationToken);
+        }
 
-        public void UpdateSpeaker(Speaker speaker) => Update(speaker);
+        public async Task UpdateSpeakerAsync(Speaker speaker, CancellationToken cancellationToken = default)
+        {
+            var speakerForUpdate = await GetSpeakerAsync(speaker.Id, true, cancellationToken);
+            if (speakerForUpdate == null)
+            {
+                throw new NotFoundException("Speaker with such id is not found");
+            }
+            _context.Speakers.Update(speaker);
+            await _context.SaveChangesAsync(cancellationToken);
+        }
     }
 }

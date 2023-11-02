@@ -1,24 +1,50 @@
 ﻿using Contracts.Repositories;
 using Entities;
+using Entities.Exceptions;
 using event_web_api.DAL.EF;
 using Microsoft.EntityFrameworkCore;
 
 namespace event_web_api.DAL.Repositories
 {
-    public class EventRepository : RepositoryBase<Event>, IEventRepository
+    public class EventRepository : IEventRepository
     {
-        public EventRepository(EventContext context) : base(context)
+        private EventContext _context;
+        public EventRepository(EventContext context)
         {
+            _context = context;
         }
 
-        public void CreateEvent(Event @event) => Create(@event);
+        public async Task CreateEventAsync(Event @event, CancellationToken cancellationToken = default)
+        {
+            await _context.AddAsync(@event, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
+        }
 
-        public void DeleteEvent(Event @event) => Delete(@event);
+        public async Task DeleteEventAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            var eventForDelete = _context.Events.SingleOrDefaultAsync(e => e.Id.Equals(id), cancellationToken);
+            if (eventForDelete == null)
+            {
+                throw new NotFoundException("Event with such id is not found");
+            }
+            _context.Remove(eventForDelete);
+            await _context.SaveChangesAsync(cancellationToken);
+        }
 
-        public IQueryable<Event> GetAllEvent(bool trackChanges) => FindAll(trackChanges).Include(e => e.Speaker).OrderBy(e => e.Date);
+        public async Task<IEnumerable<Event>> GetAllEventsAsync(bool trackChanges, CancellationToken cancellationToken = default)
+        {
+            return await (trackChanges ? _context.Events.AsNoTracking() : _context.Events).Include(e => e.Speaker).OrderBy(e => e.Date).ToListAsync(cancellationToken);
+        }
 
-        public Event? GetEvent(Guid id, bool trackChanges) => FindByCondition(e => e.Id.Equals(id), trackChanges).SingleOrDefault();
+        public async Task<Event?> GetEventAsync(Guid id, bool trackChanges, CancellationToken cancellationToken = default)
+        {
+            return await (trackChanges ? _context.Events.AsNoTracking() : _context.Events).Include(e => e.Speaker).SingleOrDefaultAsync(e => e.Id.Equals(id), cancellationToken); ;
+        }
 
-        public void UpdateEvent(Event @event) => Update(@event);
+        public async Task UpdateEventAsync(Event @event, CancellationToken cancellationToken = default)
+        {
+            _context.Events.Update(@event);
+            await _context.SaveChangesAsync(cancellationToken);
+        }
     }
 }
