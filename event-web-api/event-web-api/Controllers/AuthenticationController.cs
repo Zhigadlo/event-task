@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace event_web_api.Controllers
 {
     [Route("api/authentication")]
-    [Authorize(AuthenticationSchemes = "Bearer")]
     [ApiController]
     public class AuthenticationController : Controller
     {
@@ -22,7 +21,7 @@ namespace event_web_api.Controllers
             _authManager = authManager;
         }
 
-        [HttpPost("register"), Authorize]
+        [HttpPost("register")]
         public async Task<IActionResult> RegisterUser([FromBody] UserForRegistrationDto userForRegistration)
         {
             var user = _mapper.Map<IdentityUser>(userForRegistration);
@@ -35,7 +34,6 @@ namespace event_web_api.Controllers
                 }
                 return BadRequest(ModelState);
             }
-            //await _userManager.AddToRolesAsync(user, userForRegistration.Roles);
             return StatusCode(201);
         }
 

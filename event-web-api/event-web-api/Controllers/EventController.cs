@@ -1,12 +1,14 @@
 ﻿using Contracts.Managers;
 using Entities.DatatTransferObjects.EventDtos;
 using Entities.ErrorModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace event_web_api.Controllers
 {
     [ApiController]
     [Route("api/events")]
+    [Authorize]
     public class EventController : Controller
     {
         private IServiceManager _serviceManager;

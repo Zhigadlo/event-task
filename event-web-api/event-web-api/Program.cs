@@ -22,12 +22,14 @@ builder.Services.ConfigureJWT(builder.Configuration);
 var config = new MapperConfiguration(cfg => cfg.AddProfiles(new List<Profile>
     {
         new SpeakerProfile(),
-        new EventProfile()
+        new EventProfile(),
+        new UserProfile()
     }));
 
 builder.Services.AddScoped<IMapper>(x => new Mapper(config));
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
 builder.Services.AddScoped<IServiceManager, ServiceManager>();
+builder.Services.AddScoped<IAuthenticationManager, AuthenticationManager>();
 
 builder.Services.AddControllers();
 
@@ -37,6 +39,7 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 app.MigrateDatabase<EventContext>();
+app.MigrateDatabase<UserContext>();
 
 if (app.Environment.IsDevelopment())
 {

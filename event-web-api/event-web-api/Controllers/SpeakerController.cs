@@ -1,12 +1,14 @@
 ﻿using Contracts.Managers;
 using Entities.DatatTransferObjects.SpeakerDtos;
 using Entities.ErrorModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace event_web_api.Controllers
 {
     [ApiController]
     [Route("api/speakers")]
+    [Authorize]
     public class SpeakerController : Controller
     {
         private IServiceManager _serviceManager;

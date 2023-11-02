@@ -1,4 +1,5 @@
-﻿using Entities.DatatTransferObjects.UserDtos;
+﻿using Contracts.Managers;
+using Entities.DatatTransferObjects.UserDtos;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -8,7 +9,7 @@ using System.Text;
 
 namespace event_web_api.BLL.Managers
 {
-    public class AuthenticationManager
+    public class AuthenticationManager : IAuthenticationManager
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IConfiguration _configuration;
