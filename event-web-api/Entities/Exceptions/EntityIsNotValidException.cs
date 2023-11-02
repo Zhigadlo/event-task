@@ -1,6 +1,6 @@
 ﻿namespace Entities.Exceptions
 {
-    public class EntityIsNotValidException : Exception
+    public class EntityIsNotValidException : BadRequestException
     {
         public EntityIsNotValidException(string? message) : base(message)
         {
