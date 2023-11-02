@@ -21,7 +21,7 @@ namespace event_web_api.BLL.Service
             _validator = new EventValidator();
         }
 
-        public async Task<EventDto?> CreateAsync(EventForUpdateDto eventForCreationDto, CancellationToken cancellationToken = default)
+        public async Task<EventDto?> CreateAsync(EventForCreationDto eventForCreationDto, CancellationToken cancellationToken = default)
         {
             var @event = _mapper.Map<Event>(eventForCreationDto);
             var result = await _validator.ValidateAsync(@event, cancellationToken);
