@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Contracts.Repositories;
+using Contracts.Managers;
 using Contracts.Services;
 using event_web_api.BLL.Service;
 
@@ -39,5 +39,6 @@ namespace event_web_api.BLL.Managers
                 return _event;
             }
         }
+
     }
 }
