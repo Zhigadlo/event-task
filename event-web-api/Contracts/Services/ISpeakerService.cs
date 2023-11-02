@@ -1,4 +1,4 @@
-﻿using Entities.DatatTransferObjects;
+﻿using Entities.DatatTransferObjects.SpeakerDtos;
 
 namespace Contracts.Services
 {
