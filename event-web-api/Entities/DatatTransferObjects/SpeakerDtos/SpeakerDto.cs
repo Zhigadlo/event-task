@@ -1,4 +1,4 @@
-﻿namespace Entities.DatatTransferObjects
+﻿namespace Entities.DatatTransferObjects.SpeakerDtos
 {
     public class SpeakerDto
     {
