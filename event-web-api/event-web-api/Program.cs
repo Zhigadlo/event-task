@@ -31,6 +31,7 @@ builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
 builder.Services.AddScoped<IServiceManager, ServiceManager>();
 builder.Services.AddScoped<IAuthenticationManager, AuthenticationManager>();
 
+builder.Services.ConfigureSwagger();
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();

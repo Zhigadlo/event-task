@@ -8,7 +8,7 @@ namespace event_web_api.Controllers
 {
     [ApiController]
     [Route("api/speakers")]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     public class SpeakerController : Controller
     {
         private IServiceManager _serviceManager;

@@ -6,7 +6,7 @@ namespace event_web_api.BLL.Mapper
 {
     public class UserProfile : Profile
     {
-        public UserProfile() 
+        public UserProfile()
         {
             CreateMap<UserForRegistrationDto, IdentityUser>();
         }

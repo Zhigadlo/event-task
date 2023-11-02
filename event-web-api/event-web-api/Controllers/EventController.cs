@@ -8,7 +8,7 @@ namespace event_web_api.Controllers
 {
     [ApiController]
     [Route("api/events")]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     public class EventController : Controller
     {
         private IServiceManager _serviceManager;
