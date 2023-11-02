@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using Contracts.Repositories;
+using Contracts.Managers;
 using Contracts.Services;
 using Entities;
-using Entities.DatatTransferObjects;
+using Entities.DatatTransferObjects.SpeakerDtos;
 using Entities.Exceptions;
 using event_web_api.BLL.Validation;
 

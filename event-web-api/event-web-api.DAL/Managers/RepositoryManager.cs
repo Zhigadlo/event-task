@@ -1,4 +1,5 @@
-﻿using Contracts.Repositories;
+﻿using Contracts.Managers;
+using Contracts.Repositories;
 using event_web_api.DAL.EF;
 using event_web_api.DAL.Repositories;
 

@@ -1,9 +1,9 @@
-﻿using Contracts.Services;
-using Entities.DatatTransferObjects;
+﻿using Contracts.Managers;
+using Entities.DatatTransferObjects.EventDtos;
 using Entities.ErrorModels;
 using Microsoft.AspNetCore.Mvc;
 
-namespace event_web_api.Contracts
+namespace event_web_api.Controllers
 {
     [ApiController]
     [Route("api/events")]

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Entities;
-using Entities.DatatTransferObjects;
+using Entities.DatatTransferObjects.EventDtos;
 
 namespace event_web_api.BLL.Mapper
 {
