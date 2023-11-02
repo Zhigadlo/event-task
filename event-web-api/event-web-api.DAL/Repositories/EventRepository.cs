@@ -16,13 +16,18 @@ namespace event_web_api.DAL.Repositories
 
         public async Task CreateEventAsync(Event @event, CancellationToken cancellationToken = default)
         {
-            await _context.AddAsync(@event, cancellationToken);
+            @event.Speaker = await _context.Speakers.SingleOrDefaultAsync(s => s.Id.Equals(@event.SpeakerId), cancellationToken);
+            if (@event.Speaker == null)
+            {
+                throw new NotFoundException("Speaker for event with such id is not found");
+            }
+            await _context.Events.AddAsync(@event, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
         }
 
         public async Task DeleteEventAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            var eventForDelete = _context.Events.SingleOrDefaultAsync(e => e.Id.Equals(id), cancellationToken);
+            var eventForDelete = await _context.Events.SingleOrDefaultAsync(e => e.Id.Equals(id), cancellationToken);
             if (eventForDelete == null)
             {
                 throw new NotFoundException("Event with such id is not found");

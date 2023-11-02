@@ -22,7 +22,7 @@ namespace event_web_api.DAL.Repositories
 
         public async Task DeleteSpeakerAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            var speakerForDelete = _context.Events.SingleOrDefaultAsync(e => e.Id.Equals(id), cancellationToken);
+            var speakerForDelete = await _context.Speakers.SingleOrDefaultAsync(e => e.Id.Equals(id), cancellationToken);
             if (speakerForDelete == null)
             {
                 throw new NotFoundException("Speaker with such id not found");
