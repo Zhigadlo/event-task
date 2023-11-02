@@ -21,7 +21,7 @@ namespace event_web_api.BLL.Service
             _validator = new EventValidator();
         }
 
-        public async Task<EventDto?> CreateAsync(EventForUpdateDto eventForCreationDto, CancellationToken cancellationToken)
+        public async Task<EventDto?> CreateAsync(EventForUpdateDto eventForCreationDto, CancellationToken cancellationToken = default)
         {
             var @event = _mapper.Map<Event>(eventForCreationDto);
             var result = await _validator.ValidateAsync(@event, cancellationToken);
@@ -31,52 +31,37 @@ namespace event_web_api.BLL.Service
                 throw new EntityIsNotValidException(message);
             }
 
-            _repositoryManager.Event.CreateEvent(@event);
-            await _repositoryManager.SaveChangesAsync(cancellationToken);
+            await _repositoryManager.Event.CreateEventAsync(@event, cancellationToken);
             return _mapper.Map<EventDto>(@event);
         }
 
-        public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
+        public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            var eventForDelete = _repositoryManager.Event.GetEvent(id, true);
-            if (eventForDelete == null)
-            {
-                throw new NotFoundException("Event with such id is not found");
-            }
-
-            _repositoryManager.Event.DeleteEvent(eventForDelete);
-            await _repositoryManager.SaveChangesAsync(cancellationToken);
+            await _repositoryManager.Event.DeleteEventAsync(id, cancellationToken);
         }
 
-        public async Task<IEnumerable<EventDto>?> GetAllAsync(bool trackChanges)
+        public async Task<IEnumerable<EventDto>?> GetAllAsync(bool trackChanges, CancellationToken cancellationToken = default)
         {
-            return await Task.FromResult(_mapper.Map<IEnumerable<EventDto>>(_repositoryManager.Event.GetAllEvent(false)));
+            return _mapper.Map<IEnumerable<EventDto>>(await _repositoryManager.Event.GetAllEventsAsync(false, cancellationToken));
         }
 
-        public async Task<EventDto?> GetAsync(Guid id, bool trackChanges)
+        public async Task<EventDto?> GetAsync(Guid id, bool trackChanges, CancellationToken cancellationToken = default)
         {
-            return await Task.FromResult(_mapper.Map<EventDto>(_repositoryManager.Event.GetEvent(id, false)));
+            return _mapper.Map<EventDto>(await _repositoryManager.Event.GetEventAsync(id, false, cancellationToken));
         }
 
-        public async Task Update(EventForUpdateDto eventForUpdateDto, CancellationToken cancellationToken)
+        public async Task UpdateAsync(EventForUpdateDto eventForUpdateDto, CancellationToken cancellationToken = default)
         {
-            var @event = _repositoryManager.Event.GetEvent(eventForUpdateDto.Id, true);
-            if (@event == null)
-            {
-                throw new NotFoundException("Event with such id is not found");
-            }
+            var @event = _mapper.Map<Event>(eventForUpdateDto);
 
-            _mapper.Map(eventForUpdateDto, @event);
-
-            var result = await _validator.ValidateAsync(@event);
+            var result = await _validator.ValidateAsync(@event, cancellationToken);
             if (!result.IsValid)
             {
                 var message = string.Join(Environment.NewLine, result.Errors.Select(x => x.ErrorMessage));
                 throw new EntityIsNotValidException(message);
             }
 
-            _repositoryManager.Event.UpdateEvent(@event);
-            await _repositoryManager.SaveChangesAsync(cancellationToken);
+            await _repositoryManager.Event.UpdateEventAsync(@event, cancellationToken);
         }
     }
 }

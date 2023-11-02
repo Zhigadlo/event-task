@@ -8,6 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="FluentValidation" Version="11.8.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\event-web-api.DAL\event-web-api.DAL.csproj" />
   </ItemGroup>
 

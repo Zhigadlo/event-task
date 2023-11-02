@@ -30,42 +30,28 @@ namespace event_web_api.BLL.Service
                 throw new EntityIsNotValidException(message);
             }
 
-            _repositoryManager.Speaker.CreateSpeaker(speaker);
-            await _repositoryManager.SaveChangesAsync(cancellationToken);
+            await _repositoryManager.Speaker.CreateSpeakerAsync(speaker, cancellationToken);
             return _mapper.Map<SpeakerDto>(speaker);
         }
 
         public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            var speakerForDelete = _repositoryManager.Speaker.GetSpeaker(id, true);
-            if (speakerForDelete == null)
-            {
-                throw new NotFoundException("Speaker with such id is not found");
-            }
-
-            _repositoryManager.Speaker.DeleteSpeaker(speakerForDelete);
-            await _repositoryManager.SaveChangesAsync(cancellationToken);
+            await _repositoryManager.Speaker.DeleteSpeakerAsync(id, cancellationToken);
         }
 
-        public async Task<IEnumerable<SpeakerDto>?> GetAllAsync(bool trackChanges)
+        public async Task<IEnumerable<SpeakerDto>?> GetAllAsync(bool trackChanges, CancellationToken cancellationToken = default)
         {
-            return await Task.FromResult(_mapper.Map<IEnumerable<SpeakerDto>>(_repositoryManager.Speaker.GetAllSpeaker(trackChanges)));
+            return _mapper.Map<IEnumerable<SpeakerDto>?>(await _repositoryManager.Speaker.GetAllSpeakersAsync(trackChanges, cancellationToken));
         }
 
-        public async Task<SpeakerDto?> GetAsync(Guid id, bool trackChanges)
+        public async Task<SpeakerDto?> GetAsync(Guid id, bool trackChanges, CancellationToken cancellationToken = default)
         {
-            return await Task.FromResult(_mapper.Map<SpeakerDto>(_repositoryManager.Speaker.GetSpeaker(id, trackChanges)));
+            return _mapper.Map<SpeakerDto>(await _repositoryManager.Speaker.GetSpeakerAsync(id, trackChanges, cancellationToken));
         }
 
         public async Task UpdateAsync(SpeakerDto speakerForUpdateDto, CancellationToken cancellationToken = default)
         {
-            var speaker = _repositoryManager.Speaker.GetSpeaker(speakerForUpdateDto.Id, true);
-            if (speaker == null)
-            {
-                throw new NotFoundException("Speaker with such id is not found");
-            }
-
-            _mapper.Map(speakerForUpdateDto, speaker);
+            var speaker = _mapper.Map<Speaker>(speakerForUpdateDto);
 
             var result = await _validator.ValidateAsync(speaker);
             if (!result.IsValid)
@@ -74,8 +60,7 @@ namespace event_web_api.BLL.Service
                 throw new EntityIsNotValidException(message);
             }
 
-            _repositoryManager.Speaker.UpdateSpeaker(speaker);
-            await _repositoryManager.SaveChangesAsync(cancellationToken);
+            await _repositoryManager.Speaker.UpdateSpeakerAsync(speaker);
         }
     }
 }
