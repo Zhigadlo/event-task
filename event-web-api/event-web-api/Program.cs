@@ -1,8 +1,11 @@
+using AutoMapper;
 using Contracts.Repositories;
 using Contracts.Services;
 using event_web_api.BLL.Managers;
+using event_web_api.BLL.Mapper;
 using event_web_api.DAL.EF;
 using event_web_api.DAL.Managers;
+using event_web_api.Extensions;
 using event_web_api.Middleware;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,6 +14,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<EventContext>(options =>
                              options.UseSqlServer(builder.Configuration.GetConnectionString("EventsDatabase")));
 
+var config = new MapperConfiguration(cfg => cfg.AddProfiles(new List<Profile>
+    {
+        new SpeakerProfile(),
+        new EventProfile()
+    }));
+builder.Services.AddScoped<IMapper>(x => new Mapper(config));
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
 builder.Services.AddScoped<IServiceManager, ServiceManager>();
 
@@ -20,6 +29,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.MigrateDatabase<EventContext>();
 
 if (app.Environment.IsDevelopment())
 {
