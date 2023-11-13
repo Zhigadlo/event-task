@@ -1,8 +1,6 @@
-﻿using AutoMapper;
-using Contracts.Managers;
+﻿using Contracts.Services;
 using Entities.DatatTransferObjects.UserDtos;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace event_web_api.Controllers
@@ -11,41 +9,25 @@ namespace event_web_api.Controllers
     [ApiController]
     public class AuthenticationController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly IMapper _mapper;
-        private readonly IAuthenticationManager _authManager;
-        public AuthenticationController(UserManager<IdentityUser> userManager, IMapper mapper, IAuthenticationManager authManager)
+        private readonly IAuthenticationService _authenticationService;
+        public AuthenticationController(IAuthenticationService authenticationService)
         {
-            _userManager = userManager;
-            _mapper = mapper;
-            _authManager = authManager;
+            _authenticationService = authenticationService;
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> RegisterUser([FromBody] UserForRegistrationDto userForRegistration)
         {
-            var user = _mapper.Map<IdentityUser>(userForRegistration);
-            var result = await _userManager.CreateAsync(user, userForRegistration.Password);
-            if (!result.Succeeded)
-            {
-                foreach (var error in result.Errors)
-                {
-                    ModelState.TryAddModelError(error.Code, error.Description);
-                }
-                return BadRequest(ModelState);
-            }
-            return StatusCode(201);
+            var result = await _authenticationService.RegisterUser(userForRegistration);
+            return result.Succeeded ? StatusCode(201) : BadRequest(result);
         }
 
         [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Authenticate([FromBody] UserForAuthenticationDto user)
         {
-            if (!await _authManager.ValidateUser(user))
-            {
-                return Unauthorized();
-            }
-            return Ok(new { Token = await _authManager.CreateToken() });
+            var token = await _authenticationService.AuthenticateUser(user);
+            return token == null ? Unauthorized() : Ok(token);
         }
     }
 }

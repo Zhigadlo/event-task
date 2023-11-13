@@ -32,7 +32,7 @@ builder.Services.AddScoped<IMapper>(x => new Mapper(config));
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
 builder.Services.AddScoped<ISpeakerService, SpeakerService>();
 builder.Services.AddScoped<IEventService, EventService>();
-builder.Services.AddScoped<IAuthenticationManager, AuthenticationManager>();
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 
 builder.Services.ConfigureSwagger();
 builder.Services.AddControllers();
