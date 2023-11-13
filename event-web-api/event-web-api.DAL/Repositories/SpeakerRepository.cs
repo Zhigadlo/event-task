@@ -31,19 +31,20 @@ namespace event_web_api.DAL.Repositories
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<Speaker>> GetAllSpeakersAsync(bool trackChanges, CancellationToken cancellationToken = default)
+        public async Task<IQueryable<Speaker>> GetAllSpeakersAsync(CancellationToken cancellationToken = default)
         {
-            return await (trackChanges ? _context.Speakers.AsNoTracking() : _context.Speakers).OrderBy(s => s.FirstName).ToListAsync(cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
+            return await Task.FromResult(_context.Speakers.AsNoTracking().OrderBy(s => s.FirstName));
         }
 
-        public async Task<Speaker?> GetSpeakerAsync(Guid id, bool trackChanges, CancellationToken cancellationToken = default)
+        public async Task<Speaker?> GetSpeakerAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            return await (trackChanges ? _context.Speakers.AsNoTracking() : _context.Speakers).SingleOrDefaultAsync(s => s.Id.Equals(id), cancellationToken);
+            return await _context.Speakers.AsNoTracking().SingleOrDefaultAsync(s => s.Id.Equals(id), cancellationToken);
         }
 
         public async Task UpdateSpeakerAsync(Speaker speaker, CancellationToken cancellationToken = default)
         {
-            var speakerForUpdate = await GetSpeakerAsync(speaker.Id, true, cancellationToken);
+            var speakerForUpdate = await GetSpeakerAsync(speaker.Id, cancellationToken);
             if (speakerForUpdate == null)
             {
                 throw new NotFoundException("Speaker with such id is not found");

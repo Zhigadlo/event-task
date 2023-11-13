@@ -23,7 +23,7 @@ namespace event_web_api.Controllers
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> GetSpeakersAsync(CancellationToken cancellationToken = default)
         {
-            var speakers = await _speakerService.GetAllAsync(false, cancellationToken);
+            var speakers = await _speakerService.GetAllAsync(cancellationToken);
             return Ok(speakers);
         }
 
@@ -32,7 +32,7 @@ namespace event_web_api.Controllers
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> GetSpeakerAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            var speaker = await _speakerService.GetAsync(id, false, cancellationToken);
+            var speaker = await _speakerService.GetAsync(id, cancellationToken);
             return Ok(speaker);
         }
 
