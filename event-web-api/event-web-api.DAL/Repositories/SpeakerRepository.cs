@@ -37,6 +37,11 @@ namespace event_web_api.DAL.Repositories
             return await Task.FromResult(_context.Speakers.AsNoTracking().OrderBy(s => s.FirstName));
         }
 
+        public async Task<IQueryable<Speaker>> GetPageAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+        {
+            return (await GetAllSpeakersAsync(cancellationToken)).Skip((pageNumber - 1) * pageSize).Take(pageSize);
+        }
+
         public async Task<Speaker?> GetSpeakerAsync(Guid id, CancellationToken cancellationToken = default)
         {
             return await _context.Speakers.AsNoTracking().SingleOrDefaultAsync(s => s.Id.Equals(id), cancellationToken);

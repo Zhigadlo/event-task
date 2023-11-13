@@ -36,6 +36,15 @@ namespace event_web_api.Controllers
             return Ok(speaker);
         }
 
+        [HttpGet("{pageNumber}&{pageSize}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        public async Task<IActionResult> GetPageAsync(int pageNumber = 1, int pageSize = 15, CancellationToken cancellationToken = default)
+        {
+            var speakerPage = await _speakerService.GetPageAsync(pageNumber, pageSize, cancellationToken);
+            return Ok(speakerPage);
+        }
+
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(typeof(ErrorDetails), 400)]

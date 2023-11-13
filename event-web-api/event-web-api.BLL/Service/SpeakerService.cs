@@ -49,6 +49,11 @@ namespace event_web_api.BLL.Service
             return _mapper.Map<SpeakerDto>(await _repositoryManager.Speaker.GetSpeakerAsync(id, cancellationToken));
         }
 
+        public async Task<IEnumerable<SpeakerDto>> GetPageAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+        {
+            return _mapper.Map<IEnumerable<SpeakerDto>>(await _repositoryManager.Speaker.GetPageAsync(pageNumber, pageSize, cancellationToken));
+        }
+
         public async Task UpdateAsync(SpeakerDto speakerForUpdateDto, CancellationToken cancellationToken = default)
         {
             var speaker = _mapper.Map<Speaker>(speakerForUpdateDto);
