@@ -36,14 +36,15 @@ namespace event_web_api.DAL.Repositories
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<Event>> GetAllEventsAsync(bool trackChanges, CancellationToken cancellationToken = default)
+        public async Task<IQueryable<Event>> GetAllEventsAsync(CancellationToken cancellationToken = default)
         {
-            return await (trackChanges ? _context.Events.AsNoTracking() : _context.Events).Include(e => e.Speaker).OrderBy(e => e.Date).ToListAsync(cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
+            return await Task.FromResult(_context.Events.AsNoTracking().Include(e => e.Speaker).OrderBy(e => e.Date));
         }
 
-        public async Task<Event?> GetEventAsync(Guid id, bool trackChanges, CancellationToken cancellationToken = default)
+        public async Task<Event?> GetEventAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            return await (trackChanges ? _context.Events.AsNoTracking() : _context.Events).Include(e => e.Speaker).SingleOrDefaultAsync(e => e.Id.Equals(id), cancellationToken); ;
+            return await _context.Events.AsNoTracking().Include(e => e.Speaker).SingleOrDefaultAsync(e => e.Id.Equals(id), cancellationToken); ;
         }
 
         public async Task UpdateEventAsync(Event @event, CancellationToken cancellationToken = default)

@@ -1,7 +1,6 @@
 using AutoMapper;
 using Contracts.Managers;
 using Contracts.Services;
-using event_web_api.BLL.Managers;
 using event_web_api.BLL.Mapper;
 using event_web_api.BLL.Service;
 using event_web_api.DAL.EF;

@@ -23,7 +23,7 @@ namespace event_web_api.Controllers
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> GetEventsAsync(CancellationToken cancellationToken = default)
         {
-            var events = await _eventService.GetAllAsync(false, cancellationToken);
+            var events = await _eventService.GetAllAsync(cancellationToken);
             return Ok(events);
         }
 
@@ -32,7 +32,7 @@ namespace event_web_api.Controllers
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> GetEventAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            var @event = await _eventService.GetAsync(id, false, cancellationToken);
+            var @event = await _eventService.GetAsync(id, cancellationToken);
             return Ok(@event);
         }
 

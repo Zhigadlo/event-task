@@ -9,7 +9,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace event_web_api.BLL.Managers
+namespace event_web_api.BLL.Service
 {
     public class AuthenticationService : IAuthenticationService
     {
