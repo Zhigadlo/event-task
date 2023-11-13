@@ -1,7 +1,9 @@
 using AutoMapper;
 using Contracts.Managers;
+using Contracts.Services;
 using event_web_api.BLL.Managers;
 using event_web_api.BLL.Mapper;
+using event_web_api.BLL.Service;
 using event_web_api.DAL.EF;
 using event_web_api.DAL.Managers;
 using event_web_api.Extensions;
@@ -28,7 +30,8 @@ var config = new MapperConfiguration(cfg => cfg.AddProfiles(new List<Profile>
 
 builder.Services.AddScoped<IMapper>(x => new Mapper(config));
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
-builder.Services.AddScoped<IServiceManager, ServiceManager>();
+builder.Services.AddScoped<ISpeakerService, SpeakerService>();
+builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<IAuthenticationManager, AuthenticationManager>();
 
 builder.Services.ConfigureSwagger();
