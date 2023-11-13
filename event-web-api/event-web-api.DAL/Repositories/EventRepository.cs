@@ -47,6 +47,11 @@ namespace event_web_api.DAL.Repositories
             return await _context.Events.AsNoTracking().Include(e => e.Speaker).SingleOrDefaultAsync(e => e.Id.Equals(id), cancellationToken); ;
         }
 
+        public async Task<IQueryable<Event>> GetPageAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+        {
+            return (await GetAllEventsAsync()).Skip((pageNumber - 1) * pageSize).Take(pageSize);
+        }
+
         public async Task UpdateEventAsync(Event @event, CancellationToken cancellationToken = default)
         {
             _context.Events.Update(@event);
