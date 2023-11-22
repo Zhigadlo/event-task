@@ -4,10 +4,11 @@ namespace Contracts.Services
 {
     public interface ISpeakerService
     {
+        Task<IEnumerable<SpeakerDto>> GetPageAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default);
         Task<SpeakerDto?> CreateAsync(SpeakerForCreationDto speakerForCreationDto, CancellationToken cancellationToken = default);
         Task DeleteAsync(Guid id, CancellationToken cancellationToken = default);
-        Task<IEnumerable<SpeakerDto>?> GetAllAsync(bool trackChanges, CancellationToken cancellationToken = default);
-        Task<SpeakerDto?> GetAsync(Guid id, bool trackChanges, CancellationToken cancellationToken = default);
+        Task<IEnumerable<SpeakerDto>?> GetAllAsync(CancellationToken cancellationToken = default);
+        Task<SpeakerDto?> GetAsync(Guid id, CancellationToken cancellationToken = default);
         Task UpdateAsync(SpeakerDto speakerForUpdateDto, CancellationToken cancellationToken = default);
     }
 }

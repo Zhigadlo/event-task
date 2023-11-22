@@ -1,4 +1,4 @@
-﻿using Contracts.Managers;
+﻿using Contracts.Services;
 using Entities.DatatTransferObjects.EventDtos;
 using Entities.ErrorModels;
 using Microsoft.AspNetCore.Authorization;
@@ -11,11 +11,11 @@ namespace event_web_api.Controllers
     [Authorize(AuthenticationSchemes = "Bearer")]
     public class EventController : Controller
     {
-        private IServiceManager _serviceManager;
+        private IEventService _eventService;
 
-        public EventController(IServiceManager serviceManager)
+        public EventController(IEventService eventService)
         {
-            _serviceManager = serviceManager;
+            _eventService = eventService;
         }
 
         [HttpGet]
@@ -23,7 +23,7 @@ namespace event_web_api.Controllers
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> GetEventsAsync(CancellationToken cancellationToken = default)
         {
-            var events = await _serviceManager.Event.GetAllAsync(false, cancellationToken);
+            var events = await _eventService.GetAllAsync(cancellationToken);
             return Ok(events);
         }
 
@@ -32,8 +32,17 @@ namespace event_web_api.Controllers
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> GetEventAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            var @event = await _serviceManager.Event.GetAsync(id, false, cancellationToken);
+            var @event = await _eventService.GetAsync(id, cancellationToken);
             return Ok(@event);
+        }
+
+        [HttpGet("{pageNumber}&{pageSize}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        public async Task<IActionResult> GetPageAsync(int pageNumber = 1, int pageSize = 15, CancellationToken cancellationToken = default)
+        {
+            var eventPage = await _eventService.GetPageAsync(pageNumber, pageSize, cancellationToken);
+            return Ok(eventPage);
         }
 
         [HttpPost]
@@ -42,7 +51,7 @@ namespace event_web_api.Controllers
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> CreateEventAsync([FromBody] EventForCreationDto eventForCreation, CancellationToken cancellationToken = default)
         {
-            var createdEvent = await _serviceManager.Event.CreateAsync(eventForCreation, cancellationToken);
+            var createdEvent = await _eventService.CreateAsync(eventForCreation, cancellationToken);
             return Ok(createdEvent);
         }
 
@@ -53,7 +62,7 @@ namespace event_web_api.Controllers
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> UpdateEventAsync([FromBody] EventForUpdateDto eventForUpdate, CancellationToken cancellationToken = default)
         {
-            await _serviceManager.Event.UpdateAsync(eventForUpdate, cancellationToken);
+            await _eventService.UpdateAsync(eventForUpdate, cancellationToken);
             return Ok();
         }
 
@@ -63,7 +72,7 @@ namespace event_web_api.Controllers
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> DeleteEventAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            await _serviceManager.Event.DeleteAsync(id, cancellationToken);
+            await _eventService.DeleteAsync(id, cancellationToken);
             return Ok();
         }
     }

@@ -1,4 +1,6 @@
-﻿using Contracts.Managers;
+﻿using AutoMapper;
+using Contracts.Services;
+using Entities.Authentication;
 using Entities.DatatTransferObjects.UserDtos;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -7,20 +9,36 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace event_web_api.BLL.Managers
+namespace event_web_api.BLL.Service
 {
-    public class AuthenticationManager : IAuthenticationManager
+    public class AuthenticationService : IAuthenticationService
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IConfiguration _configuration;
+        private readonly IMapper _mapper;
 
-        public AuthenticationManager(UserManager<IdentityUser> userManager, IConfiguration configuration)
+        public AuthenticationService(UserManager<IdentityUser> userManager, IConfiguration configuration, IMapper mapper)
         {
             _userManager = userManager;
             _configuration = configuration;
+            _mapper = mapper;
         }
 
         private IdentityUser? _user;
+
+        public async Task<IdentityResult> RegisterUser(UserForRegistrationDto userForRegistration)
+        {
+            var user = _mapper.Map<IdentityUser>(userForRegistration);
+            var result = await _userManager.CreateAsync(user, userForRegistration.Password);
+            return result;
+        }
+        public async Task<JwtToken?> AuthenticateUser(UserForAuthenticationDto userForAuthentication)
+        {
+            if (!await ValidateUser(userForAuthentication))
+                return null;
+
+            return new JwtToken { Token = await CreateToken() };
+        }
         public async Task<string> CreateToken()
         {
             var signingCredentials = GetSigningCredentials();
@@ -29,7 +47,7 @@ namespace event_web_api.BLL.Managers
             return new JwtSecurityTokenHandler().WriteToken(tokenOptions);
         }
 
-        public async Task<bool> ValidateUser(UserForAuthenticationDto userForAuth)
+        private async Task<bool> ValidateUser(UserForAuthenticationDto userForAuth)
         {
             _user = await _userManager.FindByNameAsync(userForAuth.UserName);
 
@@ -69,5 +87,6 @@ namespace event_web_api.BLL.Managers
             );
             return tokenOptions;
         }
+
     }
 }

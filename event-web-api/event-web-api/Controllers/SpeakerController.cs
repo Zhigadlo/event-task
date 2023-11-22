@@ -1,4 +1,4 @@
-﻿using Contracts.Managers;
+﻿using Contracts.Services;
 using Entities.DatatTransferObjects.SpeakerDtos;
 using Entities.ErrorModels;
 using Microsoft.AspNetCore.Authorization;
@@ -11,11 +11,11 @@ namespace event_web_api.Controllers
     [Authorize(AuthenticationSchemes = "Bearer")]
     public class SpeakerController : Controller
     {
-        private IServiceManager _serviceManager;
+        private ISpeakerService _speakerService;
 
-        public SpeakerController(IServiceManager serviceManager)
+        public SpeakerController(ISpeakerService speakerService)
         {
-            _serviceManager = serviceManager;
+            _speakerService = speakerService;
         }
 
         [HttpGet]
@@ -23,7 +23,7 @@ namespace event_web_api.Controllers
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> GetSpeakersAsync(CancellationToken cancellationToken = default)
         {
-            var speakers = await _serviceManager.Speaker.GetAllAsync(false, cancellationToken);
+            var speakers = await _speakerService.GetAllAsync(cancellationToken);
             return Ok(speakers);
         }
 
@@ -32,8 +32,17 @@ namespace event_web_api.Controllers
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> GetSpeakerAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            var speaker = await _serviceManager.Speaker.GetAsync(id, false, cancellationToken);
+            var speaker = await _speakerService.GetAsync(id, cancellationToken);
             return Ok(speaker);
+        }
+
+        [HttpGet("{pageNumber}&{pageSize}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        public async Task<IActionResult> GetPageAsync(int pageNumber = 1, int pageSize = 15, CancellationToken cancellationToken = default)
+        {
+            var speakerPage = await _speakerService.GetPageAsync(pageNumber, pageSize, cancellationToken);
+            return Ok(speakerPage);
         }
 
         [HttpPost]
@@ -42,7 +51,7 @@ namespace event_web_api.Controllers
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> CreateSpeakerAsync([FromBody] SpeakerForCreationDto speakerForCreation, CancellationToken cancellationToken = default)
         {
-            var createdSpeaker = await _serviceManager.Speaker.CreateAsync(speakerForCreation, cancellationToken);
+            var createdSpeaker = await _speakerService.CreateAsync(speakerForCreation, cancellationToken);
             return Ok(createdSpeaker);
         }
 
@@ -53,7 +62,7 @@ namespace event_web_api.Controllers
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> UpdateSpeakerAsync([FromBody] SpeakerDto speakerForUpdate, CancellationToken cancellationToken = default)
         {
-            await _serviceManager.Speaker.UpdateAsync(speakerForUpdate, cancellationToken);
+            await _speakerService.UpdateAsync(speakerForUpdate, cancellationToken);
             return Ok();
         }
 
@@ -63,7 +72,7 @@ namespace event_web_api.Controllers
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> DeleteSpeakerAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            await _serviceManager.Speaker.DeleteAsync(id, cancellationToken);
+            await _speakerService.DeleteAsync(id, cancellationToken);
             return Ok();
         }
     }

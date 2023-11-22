@@ -39,14 +39,19 @@ namespace event_web_api.BLL.Service
             await _repositoryManager.Speaker.DeleteSpeakerAsync(id, cancellationToken);
         }
 
-        public async Task<IEnumerable<SpeakerDto>?> GetAllAsync(bool trackChanges, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<SpeakerDto>?> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            return _mapper.Map<IEnumerable<SpeakerDto>?>(await _repositoryManager.Speaker.GetAllSpeakersAsync(trackChanges, cancellationToken));
+            return _mapper.Map<IEnumerable<SpeakerDto>?>(await _repositoryManager.Speaker.GetAllSpeakersAsync(cancellationToken));
         }
 
-        public async Task<SpeakerDto?> GetAsync(Guid id, bool trackChanges, CancellationToken cancellationToken = default)
+        public async Task<SpeakerDto?> GetAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            return _mapper.Map<SpeakerDto>(await _repositoryManager.Speaker.GetSpeakerAsync(id, trackChanges, cancellationToken));
+            return _mapper.Map<SpeakerDto>(await _repositoryManager.Speaker.GetSpeakerAsync(id, cancellationToken));
+        }
+
+        public async Task<IEnumerable<SpeakerDto>> GetPageAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+        {
+            return _mapper.Map<IEnumerable<SpeakerDto>>(await _repositoryManager.Speaker.GetPageAsync(pageNumber, pageSize, cancellationToken));
         }
 
         public async Task UpdateAsync(SpeakerDto speakerForUpdateDto, CancellationToken cancellationToken = default)

@@ -40,14 +40,19 @@ namespace event_web_api.BLL.Service
             await _repositoryManager.Event.DeleteEventAsync(id, cancellationToken);
         }
 
-        public async Task<IEnumerable<EventDto>?> GetAllAsync(bool trackChanges, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<EventDto>?> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            return _mapper.Map<IEnumerable<EventDto>>(await _repositoryManager.Event.GetAllEventsAsync(false, cancellationToken));
+            return _mapper.Map<IEnumerable<EventDto>>(await _repositoryManager.Event.GetAllEventsAsync(cancellationToken));
         }
 
-        public async Task<EventDto?> GetAsync(Guid id, bool trackChanges, CancellationToken cancellationToken = default)
+        public async Task<EventDto?> GetAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            return _mapper.Map<EventDto>(await _repositoryManager.Event.GetEventAsync(id, false, cancellationToken));
+            return _mapper.Map<EventDto>(await _repositoryManager.Event.GetEventAsync(id, cancellationToken));
+        }
+
+        public async Task<IEnumerable<EventDto>> GetPageAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+        {
+            return _mapper.Map<IEnumerable<EventDto>>(await _repositoryManager.Event.GetPageAsync(pageNumber, pageSize, cancellationToken));
         }
 
         public async Task UpdateAsync(EventForUpdateDto eventForUpdateDto, CancellationToken cancellationToken = default)
